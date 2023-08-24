@@ -2,53 +2,72 @@ package ru.pevnenko;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import static ru.pevnenko.LogicFruit.*;
+import java.util.logging.Logger;
 
 //TODO Стукрутироваить класс - вынести все, что отвечает за меню в отдельный класс
 public class Arena extends JFrame{
+
+
     /**
      * Метод для отрисовки поля игры и все, что связано с полем
      */
-    public void drawMap() {
-        class DrawCircle extends JPanel {
-            @Override
-            public void paintComponent(Graphics g) {
-                g.drawOval((int)getPointFruit().getX(), (int)getPointFruit().getY(), 30, 30);
-                g.setColor(Color.RED);
-            }
-        }
-
-
-        //Добавить отображение стартового лого для первого фрейма
-        ImageIcon logo = new ImageIcon(HelperClass.getProperty("logoPath"));
+    public Arena() {
+        Gamer gamer = new Gamer();
 
         //Добавить фрукт
         ImageIcon fruit = new ImageIcon(HelperClass.getProperty("fruitPath"));
-        JLabel fruitLabel = new JLabel(fruit);
 
+        JFrame frame = new JFrame(HelperClass.getProperty("nameProject"));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(Integer.parseInt(HelperClass.getProperty("width")),Integer.parseInt(HelperClass.getProperty("height")));
 
+        //Создание панели меню
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menuFile = new JMenu(HelperClass.getProperty("menuFile"));
+        JMenu menuHelp = new JMenu(HelperClass.getProperty("menuHelp"));
+        JMenu menuAbout = new JMenu(HelperClass.getProperty("menuAbout"));
+        //Добавление в панель меню кнопок
+        menuBar.add(menuFile);
+        menuBar.add(menuHelp);
+        menuBar.add(menuAbout);
 
-        JButton startButton = new JButton("Start", logo);
-        startButton.setVerticalTextPosition(AbstractButton.BOTTOM);
-        startButton.setHorizontalTextPosition(AbstractButton.CENTER);
-        startButton.setActionCommand("disable");
+        // TODO - Добавить раздели в кнопки меню
+        JMenuItem menuItemAboutAuthor = new JMenuItem(HelperClass.getProperty("author"));
+        JMenuItem menuItemAboutGame = new JMenuItem(HelperClass.getProperty("game"));
+        menuAbout.add(menuItemAboutAuthor);
+        menuAbout.add(menuItemAboutGame);
 
-        JFrame startFrame = new JFrame(HelperClass.getProperty("nameProject"));
-        startFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        startFrame.setSize(Integer.parseInt(HelperClass.getProperty("width")),Integer.parseInt(HelperClass.getProperty("height")));
-        startFrame.add(startButton).setBounds(30,30,30,30);
-        startFrame.setVisible(Boolean.TRUE);
+        //Все слои приложения
+        JPanel sysPanel = new JPanel();
+        JPanel panelSnake = new JPanel();
 
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO - добавить логику при нажати на  стартовую кнопку
-                startFrame.setVisible(Boolean.FALSE);
-            }
+        JLabel aboutGamer = new JLabel(HelperClass.getProperty("aboutGamer"));
+        //Создание области для ввода ника игрока (Максимум 20 символов)
+        JTextField nameGamer = new JTextField(20);
+        JButton startButton = new JButton(HelperClass.getProperty("start"));
+        startButton.addActionListener(action -> {
+            gamer.setNameGamer(nameGamer.getText());
+            sysPanel.removeAll();
+            sysPanel.revalidate();
+            panelSnake.removeAll();
+            panelSnake.revalidate();
+            //Начало игры при нажатии кнопки старт
+            HelperClass.setStart(Boolean.TRUE);
+            // TODO - Возможно стоит добавить логировании
+            // для дебага - System.out.println(gamer.getNameGamer());
         });
+        sysPanel.add(aboutGamer);
+        sysPanel.add(nameGamer);
+        sysPanel.add(startButton);
 
+        //Панель для картинки по центру
+        ImageIcon logo = new ImageIcon(HelperClass.getProperty("logoPath"));
+        panelSnake.add(new JLabel(logo));
+
+        frame.getContentPane().add(BorderLayout.SOUTH, sysPanel);
+        frame.getContentPane().add(BorderLayout.NORTH,menuBar);
+        frame.getContentPane().add(BorderLayout.CENTER, panelSnake);
+
+        frame.setVisible(Boolean.TRUE);
     }
 }

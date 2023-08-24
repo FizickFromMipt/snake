@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class HelperClass {
+    private  static boolean start;
     private static FileInputStream fis;
     private static Properties property = new Properties();
 
@@ -18,6 +19,13 @@ public class HelperClass {
         } catch (IOException e) {
             return "Файл свойств отстуствует";
         }
+    }
+    public static Boolean getStart() {
+        return start;
+    }
+
+    public static void setStart(Boolean start) {
+        HelperClass.start = start;
     }
 
 }
