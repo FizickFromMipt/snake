@@ -1,2 +1,5 @@
-package ru.pevnenko;public class Menu {
+package ru.pevnenko;
+
+public class Menu {
+
 }
